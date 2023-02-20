@@ -28,8 +28,8 @@ $("form[name=create_user_form").submit(function (e) {
   var $error = $form.find(".error");
   var data = $form.serialize();
 
-  console.log(data);
-  console.log("HELLOOOOOO");
+  // console.log(data);
+  // console.log("HELLOOOOOO");
 
   var url;
 
