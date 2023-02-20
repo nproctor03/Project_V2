@@ -1,0 +1,67 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>Verify Labels</h1>
+
+
+
+<div class="container container-padding-m">
+  <div id ="test" class="row" style="height: 500px;">
+    <div class="col-sm-6" style="height: 100%"">
+      <div class="card">
+        <h5 class="card-header h5 text-center">Unverified Image</h5>
+          <div class="card-body">
+            <div class="booth">
+              {% if image_src %}
+              <div style="display: flex; justify-content: center; align-items: center;">
+                <img id="unverified_image" width="80%" height="80%" src="data:image/jpeg;base64,{{ image_src }}"></img>
+              </div>
+              {% else %}
+              <div style="display: flex; justify-content: center; align-items: center;">
+                <h1>No Images Requiring Verifaction. </h1>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6" style="height: 100%">
+      <div class="card">
+        <h5 class="card-header h5 text-center">Verification</h5>
+        <div class="card-body">  
+          {% if labels %}
+          <div>
+            <p>Which of the labels below accurately describe the image:</p>
+          </div>
+            <form action="{{ url_for('update_labels') }}" method="POST">
+              {% for label in labels %}
+              <div class="row">
+                <div class="col-sm-6">
+                  <label for="checkbox_{{ label }}">{{ label }}</label>
+                  <!-- <ul class="list-item">{{ label }}</label></ul> -->
+                </div>
+                <div class="col-sm-6">
+                  <input type="checkbox" id="checkbox_{{ label }}" name="checkbox_{{ label }}"  value="{{ label }}">
+                </div>
+              </div>
+              {% endfor %}
+              <input type="hidden" name="_id" value="{{ id }}">
+              <input type="submit" class="btn btn-success">
+            </form>
+            {% else %}
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <h1>No Images Requiring Verifaction. </h1>
+            </div>
+            {% endif %}
+              
+              <!-- <div class="button-container">
+                <a href="#!" class="btn btn-success" onClick="submit_ansers()">
+                  Submit
+                </a>
+              </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</div>

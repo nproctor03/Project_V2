@@ -1,0 +1,22 @@
+{
+    "editor.codeActionsOnSave": {
+
+        "source.organizeImports": false
+            
+    },
+    "python.autoComplete.extraPaths": [
+
+    
+    ],
+
+    
+
+    "python.formatting.autopep8Args": [
+        "--ignore",
+        "E402"
+    ],
+    "python.analysis.extraPaths": [],
+
+
+        
+}
