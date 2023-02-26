@@ -90,7 +90,7 @@ def label_image(face_data, imageData):
     Then returns the labelled_image and new_face_data.
     """
 
-    response = requests.post("http://127.0.0.1:5009/label_image",
+    response = requests.post("http://127.0.0.1:5003/draw_labels",
                              headers={"Content-Type": "application/json"},
                              data=json.dumps({"face_data": face_data, 'img': imageData}))
 
