@@ -114,8 +114,8 @@ def label_image(image_embedding):
 
             nearest_neighbour_labels = nearest_neighbour['verified_labels']
             nearest_neighbour_incorrect_labels = nearest_neighbour['incorrect_labels']
-            print(nearest_neighbour_labels)
-            print(nearest_neighbour_incorrect_labels)
+            print("correct : "+str(nearest_neighbour_labels))
+            print("incorrect : "+str(nearest_neighbour_incorrect_labels))
 
         else:
             nearest_neighbour_labels = nearest_neighbour = []
@@ -156,9 +156,10 @@ def get_gender_label(embedding, nearest_neighbour_incorrect_labels):
     try:
 
         index = faiss.read_index(
-            'D:\\Final_Project\\V2\\labels\\data\\gender\\genders.index')
+
+            'D:\\Final_Project\\V2\\label_server\\data\\gender\\genders.index')
         #print("index file read")
-        with open("D:\\Final_Project\\V2\\labels\\data\\gender\\genders_dictionary", "rb") as file:
+        with open("D:\\Final_Project\\V2\\label_server\\data\\gender\\genders_dictionary", "rb") as file:
             dictionary = pickle.load(file)
 
         # print("about to search index")
@@ -186,9 +187,9 @@ def get_gender_label(embedding, nearest_neighbour_incorrect_labels):
 def get_age_label(embedding, nearest_neighbour_incorrect_labels):
     try:
         index = faiss.read_index(
-            'D:\\Final_Project\\V2\\labels\\data\\age\\age.index')
+            'D:\\Final_Project\\V2\\label_server\\data\\age\\age.index')
         #print("index file read")
-        with open("D:\\Final_Project\\V2\\labels\\data\\age\\age_dictionary", "rb") as file:
+        with open("D:\\Final_Project\\V2\\label_server\\data\\age\\age_dictionary", "rb") as file:
             dictionary = pickle.load(file)
 
        # print("about to search index")
@@ -213,9 +214,9 @@ def get_age_label(embedding, nearest_neighbour_incorrect_labels):
 def get_race_label(embedding, nearest_neighbour_incorrect_labels):
     try:
         index = faiss.read_index(
-            'D:\\Final_Project\\V2\\labels\\data\\race\\race.index')
+            'D:\\Final_Project\\V2\\label_server\\data\\race\\race.index')
         #print("index file read")
-        with open("D:\\Final_Project\\V2\\labels\\data\\race\\race_dictionary", "rb") as file:
+        with open("D:\\Final_Project\\V2\\label_server\\data\\race\\race_dictionary", "rb") as file:
             dictionary = pickle.load(file)
 
        # print("about to search index")
