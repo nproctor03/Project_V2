@@ -14,6 +14,21 @@ CORS(app)
 app.secret_key = "b'8{\x05\xfbFv'\x08t\x80\xe6\xc6\xdc\xad\xbay\x03ly\xeb\xad\xaa,t'"
 
 
+# https://dev.to/brightside/scheduling-tasks-using-apscheduler-in-django-2dbl#:~:text=Setting%20up%20APScheduler%3A%201%20Adding%20something_update.py%20to%20our,4%20Thank%20you%2C%20that%27s%20it%20for%20this%20tutorial.
+scheduler = BackgroundScheduler()
+# In a production environment, the scheduler would be set to run at a time of low usage (3-4am for example).
+scheduler.add_job(label.update_data, 'interval',
+                  minutes=5, start_date=datetime.now())
+scheduler.start()
+
+# Even though we have set up the scheduler, we need to call update_data() once to populate vi_index and
+# vi_embeddings variable at start up.
+label.update_data()
+
+# x = label.vi_index.ntotal
+# print(x)
+
+
 @app.route('/')
 def home():
     return "success"
@@ -38,26 +53,8 @@ def get_labels():
         return jsonify({'success': 'False', 'msg': "Internal server error."})
 
 
-# print("Global: "+str(vi_index.ntotal))
-# print("Global: "+str(vi_embeddings))
-# https://dev.to/brightside/scheduling-tasks-using-apscheduler-in-django-2dbl#:~:text=Setting%20up%20APScheduler%3A%201%20Adding%20something_update.py%20to%20our,4%20Thank%20you%2C%20that%27s%20it%20for%20this%20tutorial.
-scheduler = BackgroundScheduler()
-
-# In a production environment, the scheduler would be set to run at a time of low usage (3-4am for example).
-scheduler.add_job(label.update_data, 'interval',
-                  minutes=5, start_date=datetime.now())
-scheduler.start()
-
-# Even though we have set up the scheduler, we need to call update_data() once to populate vi_index and
-# vi_embeddings variable at start up.
-label.update_data()
-
-# x = label.vi_index.ntotal
-# print(x)
-
-
 @app.route("/draw_labels", methods=['POST'])
-def label_Image():
+def draw_Labels():
     data = request.get_json()
 
     # Create Image object from origional image
@@ -68,10 +65,8 @@ def label_Image():
 
     # create drawing context
     draw = ImageDraw.Draw(image)
-
     face_data = data['face_data']
     count = 1
-
     # For each face in the image, get the labels and draw over original image
     for item in face_data:
         labels = item['labels']
@@ -86,7 +81,6 @@ def label_Image():
 
         # Draw labels
         # x,y = cordinates of the top left corner of the rectangle. w = width and h = height.
-
         # label_1
         # get label size. Returns tuple of (Width, height)
         label_Size = draw.textsize("Face "+str(count), font=font)

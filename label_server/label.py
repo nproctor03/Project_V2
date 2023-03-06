@@ -77,72 +77,83 @@ def update_data():
     global vi_embeddings
     global vi_index
     vi_embeddings, vi_index = build_verified_images()
-    print(len(vi_embeddings))
-    print(vi_index.ntotal)
+    # print(len(vi_embeddings))
+    # print(vi_index.ntotal)
 
 
 def label_image(image_embedding):
-    """
-    _summary_
-
-    Args:
-        list (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-
     try:
         # convert embedding to numpy array
         emb = np.array(image_embedding).astype('float32')
+        # print(vi_index.ntotal)
 
-        print(vi_index.ntotal)
         if vi_index.ntotal > 0:
-            print(vi_index.ntotal)
+            nearest_neighbour_labels = []
+            nearest_neighbour_incorrect_labels = []
 
             # Get the closest matching image from the database.
-            _, I = vi_index.search(emb, 1)
-            closest_image_embedding = vi_embeddings[I]
-            # print(closest_image_embedding)
+            _, I = vi_index.search(emb, 3)
 
-            # convert to list to search the db
-            closest_image_embedding = closest_image_embedding[0].tolist()
-            # print(closest_image_embedding)
+            closest_image_embedding_1 = vi_embeddings[[I[0][0]]].tolist()
+            closest_image_embedding_2 = vi_embeddings[[I[0][1]]].tolist()
+            closest_image_embedding_3 = vi_embeddings[[I[0][2]]].tolist()
 
-            nearest_neighbour = db.image_data.find_one(
-                {"embedding": closest_image_embedding, "requiresVerification": "False"})
+            # closest_image_embedding_1 = closest_image_embedding_1.tolist()
+            # closest_image_embedding_2 = closest_image_embedding_2.tolist()
+            # closest_image_embedding_3 = closest_image_embedding_3.tolist()
 
-            nearest_neighbour_labels = nearest_neighbour['verified_labels']
-            nearest_neighbour_incorrect_labels = nearest_neighbour['incorrect_labels']
-            print("correct : "+str(nearest_neighbour_labels))
-            print("incorrect : "+str(nearest_neighbour_incorrect_labels))
+
+# UPDATE THIS TO USE THE FIND ALL METHOD
+            # nearest_neighbour_1 = db.image_data.find_one(
+            #     {"embedding": closest_image_embedding_1, "requiresVerification": "False"})
+            # nearest_neighbour_2 = db.image_data.find_one(
+            #     {"embedding": closest_image_embedding_2, "requiresVerification": "False"})
+            # nearest_neighbour_3 = db.image_data.find_one(
+            #     {"embedding": closest_image_embedding_3, "requiresVerification": "False"})
+
+            nearest_neighbour_1 = db.image_data.find(
+                {"embedding": closest_image_embedding_1, "requiresVerification": "False"})
+
+            print("query executed")
+
+            for neighbour in nearest_neighbour_1:
+                nearest_neighbour_incorrect_labels += neighbour['incorrect_labels']
+                nearest_neighbour_labels += neighbour['verified_labels']
+            #     nearest_neighbour_labels += neighbour['verified_labels']
+            #     nearest_neighbour_incorrect_labels += neighbour['incorrect_labels']
+
+            nearest_neighbour_2 = db.image_data.find(
+                {"embedding": closest_image_embedding_2, "requiresVerification": "False"})
+
+            for neighbour in nearest_neighbour_2:
+                nearest_neighbour_labels += neighbour['verified_labels']
+                nearest_neighbour_incorrect_labels += neighbour['incorrect_labels']
+
+            nearest_neighbour_3 = db.image_data.find(
+                {"embedding": closest_image_embedding_3, "requiresVerification": "False"})
+
+            for neighbour in nearest_neighbour_3:
+                nearest_neighbour_labels += neighbour['verified_labels']
+                nearest_neighbour_incorrect_labels += neighbour['incorrect_labels']
+
+        
+            nearest_neighbour_labels = list(set(nearest_neighbour_labels))
+            # print(nearest_neighbour_labels)
+
+            nearest_neighbour_incorrect_labels = list(set(
+                nearest_neighbour_incorrect_labels))
+            # print(nearest_neighbour_incorrect_labels)
 
         else:
-            nearest_neighbour_labels = nearest_neighbour = []
+            nearest_neighbour_labels = []
             nearest_neighbour_incorrect_labels = []
-            print(nearest_neighbour_labels)
-            print(nearest_neighbour_incorrect_labels)
 
         # Get the labels from the closest matching image.
-
         age = get_age_label(emb, nearest_neighbour_incorrect_labels)
         gender = get_gender_label(emb, nearest_neighbour_incorrect_labels)
         race = get_race_label(emb, nearest_neighbour_incorrect_labels)
-
-        # # print(emb)
-        # # pass into faiss indexes to get labels
-        # has_beard = label_beard(emb)
-        # generation = label_generation(emb)
-        # hair_type = label_hair_type(emb)
-        # mouth_opened_or_closed = label_mouth_opened(emb)
-        # nationality = label_nationality(emb)
-        # sex = label_sex(emb)
-        # glasses = label_wearing_glasses(emb)
-        # hat = label_wearing_hat(emb)
-
         labels = [age, gender, race]
         status = "success"
-
         return status, labels
 
     except Exception as e:
@@ -156,9 +167,7 @@ def get_gender_label(embedding, nearest_neighbour_incorrect_labels):
     try:
 
         index = faiss.read_index(
-
             'D:\\Final_Project\\V2\\label_server\\data\\gender\\genders.index')
-        #print("index file read")
         with open("D:\\Final_Project\\V2\\label_server\\data\\gender\\genders_dictionary", "rb") as file:
             dictionary = pickle.load(file)
 
@@ -188,26 +197,19 @@ def get_age_label(embedding, nearest_neighbour_incorrect_labels):
     try:
         index = faiss.read_index(
             'D:\\Final_Project\\V2\\label_server\\data\\age\\age.index')
-        #print("index file read")
         with open("D:\\Final_Project\\V2\\label_server\\data\\age\\age_dictionary", "rb") as file:
             dictionary = pickle.load(file)
-
-       # print("about to search index")
         D, I = index.search(embedding, 10)
-
         # https://www.geeksforgeeks.org/using-else-conditional-statement-with-for-loop-in-python/
         for count in range(10):
             label = dictionary[I[0][count]]
-
             if label not in nearest_neighbour_incorrect_labels:
                 break
-
         else:
             label = "No Label Identified"
-
         return label
     except Exception as e:
-        print(e)
+        # print(e)
         return e
 
 
