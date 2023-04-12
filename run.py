@@ -45,6 +45,7 @@ def update_labels():
     form = request.form.to_dict()
     id = form.pop("_id", None)
     # print(id)
+    print(form)
 
     verified_labels = list(form.values())
 
@@ -101,15 +102,17 @@ def process_image():
         if response.status_code != 200:
             return jsonify({"success": "false", 'msg': 'There was an error processing the image'})
 
-        print("faces detected")
+        # print("faces detected")
         data = response.json()
 
         # .get checks if "FaceDetected" exists in data. if it does it returns default value false.
         # If value of "FaceDeteced" != True, it returns an error message.
         if data.get("FaceDetected", "False") != "True":
+            print("No faces detected")
             return jsonify({'success': 'True', 'FaceDetected': 'False'})
 
         # If faces were detected, get faces from response object.
+        print("Faces detected")
         faces = data.get("faces")
 
         # loop through faces and create a dictionary item in face_data for each face.
@@ -123,9 +126,21 @@ def process_image():
 
             for face in faces]
 
+        # Get labelling method
+        method = req["method"]
+        if method == "method_1":
+            label_endpoint = "http://127.0.0.1:5003/label_method_1"
+            print("method 1")
+        elif method == "method_2":
+            label_endpoint = "http://127.0.0.1:5003/label_method_2"
+            print("method 2")
+        elif method == "method_3":
+            label_endpoint = "http://127.0.0.1:5003/label_method_3"
+            print("method 3")
+
         face_data = get_embeddings(face_data)
         print("embedding retrieved")
-        face_data = get_labels(face_data)
+        face_data = get_labels(face_data, label_endpoint)
         print("labels retrieved")
         labelled_image, complete_face_data = label_image(face_data, image_data)
         save_image(face_data)

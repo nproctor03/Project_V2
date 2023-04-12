@@ -14,9 +14,13 @@
   --primary-dark: #1976D2;
   --secondary: #CFD8DC;
   --secondary-dark: #B0BEC5;
-  --red: #EF4836;
-  --success: #28a745;
-  --success-dark: #154734;
+  --red: rgba(186, 18, 23, 0.8);
+  --red-darker: rgba(138, 16, 20, 0.8);
+  --success: hsl(134, 62%, 42%);
+  --success-dark:hsl(134, 61%, 30%);;
+
+  --font-size-h1: 32px; 
+  --font-size-homepage: 19px;
 }
 
 * {
@@ -36,6 +40,30 @@ body {
 .body-padding-20{
   padding: 20px;
 
+}
+
+.margin-top-xxl{
+  margin-top: 5pc;
+}
+
+.margin-top-xs {
+  margin-top: 0.5pc;
+}
+
+.margin-left-s{
+  margin-left: 1pc;
+}
+
+.margin-top-25px {
+  margin-top: 25px;
+}
+
+.content-title{
+  font-size: var(--font-size-h1);
+}
+
+.content-text {
+  font-size: var(--font-size-homepage);
 }
 
 /* Typography */
@@ -79,6 +107,21 @@ p {
   background: var(--white);
 }
 
+.col-10{
+  flex: 0 0 auto;
+  width: 80%
+}
+
+.home-page-card {
+  margin: 0 30px 60px;
+  padding: 20px 40px;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 8px 26px -4px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  background: var(--white);
+}
+
 .button-container{
   text-align: right;
 }
@@ -87,7 +130,7 @@ p {
   margin: 0 30px 60px;
   padding: 20px 40px;
   width: 95%;
-  height: 100%;
+  height: 85%;
   /* height: 530px; */
   box-shadow: 0 8px 26px -4px rgba(0,0,0,0.15);
   border-radius: 5px;
@@ -127,6 +170,10 @@ p {
 }
 .font-size-s{
   font-size: x-small;
+}
+
+.label-font-size{
+  font-size: medium;
 }
 
 @media only screen and (max-width: 520px) {
@@ -190,8 +237,27 @@ label {
   color: var(--red);
 }
 
+.scrollable-area{
+  height: 150px; 
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 2px;
+  border: 1px solid;
+}
+
+.inherit-padding{
+  padding-left: inherit;
+}
 .error--hidden {
   display: none;
+}
+
+.ul-bullet-point{
+  list-style-type: circle;
+}
+
+.user-label-input{
+  height: 30;
 }
 
 /* Buttons */
@@ -230,8 +296,25 @@ label {
 .btn-success {
   background: var(--success);
 }
+
+.btn-light {
+  background: var(--grey-light);
+}
+
 .btn-success:hover {
   background: var(--success-dark);
+}
+
+.btn-danger {
+  background: var(--red);
+}
+
+.btn-danger:hover {
+  background: var(--red-darker);
+}
+
+.btn-right{
+  float: right;
 }
 /* input[type=submit] {
   margin: 34px auto 24px;

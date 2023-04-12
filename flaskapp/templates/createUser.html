@@ -1,49 +1,43 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="body-padding-20">
+<div class="body-padding-20 margin-top-m card-wrapper">
   <div id="success"></div>
-  <h1>Create New User</h1>
   <div class="row">
-    <div class="col-3">
-      <form name="create_user_form">
-        <label for="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          name="username"
-          class="field"
-          required
-        />
+    <div class="col-3 login_card">
+      <div class="content-title center">Create Account</div>
+      <div class="margin-top-m">
+        <form name="create_user_form">
+          <label for="username">Username</label>
+          <input id="username" type="text" name="username" class="field" />
 
-        <label for="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          name="password"
-          class="field"
-          required
-        />
-
-        <div class="row">
-          <label for="checkbox">User is admin?</label>
-        </div>
-        <div class="row">
-          <div class="col-2">
-            <input id="isAdmin" type="checkbox" name="checkbox" class="field" />
+          <label for="password">Password</label>
+          <input id="password" type="password" name="password" class="field" />
+          <div class="row">
+            <label for="checkbox" class="col-12">User is admin?</label>
+            <div class="col-10">
+              <div class="form-check">
+                <input
+                  id="isAdmin"
+                  type="checkbox"
+                  name="checkbox"
+                  class="form-check-input"
+                />
+              </div>
+            </div>
           </div>
-        </div>
 
-        <p class="error error--hidden"></p>
+          <p id="error-message" class="error error--hidden"></p>
 
-        <div class="row">
-          <div class="col-6">
-            <input type="submit" value="Create User" class="btn" />
+          <div class="row margin-top-m center">
+            <div class="col-6">
+              <input type="submit" value="Create User" class="btn" />
+            </div>
+            <div class="col-6">
+              <button id="clear-form" class="btn">Clear</button>
+            </div>
           </div>
-          <div class="col-6">
-            <button id="clear-form" class="btn">Clear</button>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>

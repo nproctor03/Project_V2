@@ -1,7 +1,35 @@
 {% extends 'base.html' %} {% block content %}
 
-<h1>Home page</h1>
+<div class="row margin-top-xxl">
+  <div class="col-1"></div>
+  <div class="col-10">
+    <div class="home-page-card">
+      <div class="margin-top-m">
+        <div class="content-title">
+          Welcome To The Image Analyser Application.
+          <div class="content-text margin-top-m">
+            <p>
+              All users of this application can use the Image Analyser
+              <a href="/analyser/">here</a>.
+            </p>
+            <p>
+              The Image Analyser will detect and label any faces detected via
+              your devices webcam.
+            </p>
+            <p>
+              Registered users can verify image labels on the Image Verification
+              page once they are logged in.
+            </p>
+            <p>
+              If you require an account, please submit a request to the system
+              administrators.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-1"></div>
+</div>
 
-<!-- {% if session['logged_in'] %}
-<div>IT WORKED</div> -->
-{% endif %} {% endblock %}
+{% endblock %}

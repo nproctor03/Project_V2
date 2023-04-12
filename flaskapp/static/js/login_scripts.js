@@ -64,8 +64,10 @@ $("form[name=create_user_form").submit(function (e) {
 });
 
 // Clears the create user form
-$("#clear-form").click(function () {
+$("#clear-form").click(function (e) {
+  e.preventDefault();
   $("#username").val("");
   $("#password").val("");
+  $("#error-message").html("");
   $("#isAdmin").prop("checked", false);
 });

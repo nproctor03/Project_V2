@@ -1,198 +1,101 @@
 {% extends 'base.html' %} {% block content %}
-
-<h1>Face Analyser</h1>
-
-<div class="container container-padding-m">
+<div class="container container-padding-m margin-top-xxl">
   <div class="row">  
     <div class="col-sm-6">
       <div class="card">
-        <h5 class="card-header h5 text-center">Analyser</h5>
+        <h5 class="card-header h5 text-center">Analyzer</h5>
         <div class="card-body">
           <div class="booth">
             <video id="video" width="100%" height="100%" autoplay></video>
           </div>
-
-          <div class="text-right">
-            <a href="#!" class="btn btn-danger" onClick="stopAnalysis()">
-              Stop
-            </a>
-            <a
-              href="#!"
-              class="btn btn-success"
-              onClick="take_screenshot()"
-            >
-              Start Analysis
-            </a>
+          <div class="btn-right">
+            <button type="button" class="btn btn-success" id="method_1_btn" onclick="take_screenshot('method_1')">Method 1</button>
+            <button type="button" class="btn btn-success" id="method_2_btn" onclick="take_screenshot('method_2')">Method 2</button>
+            <button type="button" class="btn btn-success" id="method_3_btn" onclick="take_screenshot('method_3')">Method 3</button>
+            <button type="button" class="btn btn-danger" onclick="stopAnalysis()">Stop</button>
+            
           </div>
         </div>
       </div>
     </div>
-
     <div class="col-sm-6">
       <div class="card">
         <h5 class="card-header h5 text-center">Results</h5>
-          <div class="card-body">
-            <div class="booth">
-              <div>
-                <img id="image_1"  width="100%" height="100%"></img>
-              </div>
+        <div class="card-body">
+          <div class="booth">
+            <div>
+              <img id="image_1" width="100%" height="100%">
             </div>
           </div>
+        </div>
       </div>
     </div>
   </div>
 
-
-
-    <div class="row margin-top-l">
-      <div class="col-sm-4">
-        <div class="card-small">
-          <h5 class="card-header h5 text-center">Face 1</h5>
-          <div class="card-body margin-top-m">
-            <div class="row">
-              <div class="col-sm-6">
-                <div>
-                  <img id="face_1"  width="100%" height="100%">
-                </div>
+  <div class="row margin-top-l">
+    <div class="col-sm-4">
+      <div class="card-small">
+        <h5 class="card-header h5 text-center">Face 1</h5>
+        <div class="card-body margin-top-m">
+          <p id="not_detected_1" style="display:none">No Face Detected</p>
+          <div id= "ctn_face_1" class="row">
+            <div class="col-sm-6">
+              <div>
+                <img id="face_1" width="100%" height="100%">
               </div>
-              <div class="col-sm-6">
-                <ul id="label_face_1"></ul>
-              </div>
-            </div> 
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card-small">
-          <h5 class="card-header h5 text-center">Face 2</h5>
-          <div class="card-body margin-top-m">
-            <div class="row">
-              <div class="col-sm-6">
-                <div>
-                  <img id="face_2"  width="100%" height="100%">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <ul id="label_face_2"></ul>
-              </div>
-            </div> 
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card-small">
-          <h5 class="card-header h5 text-center">Face 3</h5>
-          <div class="card-body margin-top-l">
-            <div class="row">
-              <div class="col-sm-6">
-                <div>
-                  <img id="face_3"  width="100%" height="100%">
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <ul id="label_face_3" class="font-size-s"></ul>
-              </div>
-            </div> 
-          </div>
+            </div>
+            <div class="col-sm-6">
+              <ul id="label_face_1"></ul>
+            </div>
+          </div> 
         </div>
       </div>
     </div>
+    <div class="col-sm-4">
+      <div class="card-small">
+        <h5 class="card-header h5 text-center">Face 2</h5>
+        <div class="card-body margin-top-m">
+          <p id="not_detected_2" style="display:none">No Face Detected</p>
+          <div id= "ctn_face_2" class="row">
+            <div class="col-sm-6">
+              <div>
+                <img id="face_2" width="100%" height="100%">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <ul id="label_face_2"></ul>
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card-small">
+        <h5 class="card-header h5 text-center">Face 3</h5>
+        <div class="card-body margin-top-m">
+          <p id="not_detected_3" style="display:none">No Face Detected</p>
+          <div id= "ctn_face_3" class="row">
+            <div class="col-sm-6">
+              <div>
+                <img id="face_3" width="100%" height="100%">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <ul id="label_face_3" class="font-size-s"></ul>
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-</div>  
 
-  
-    
-
-    
-    
-
-  
-
-
-
-    <!-- <div class ="container container-padding-m">
-      <div class="row">
-        <div class="col-sm-6 card-small ">
-          <div class ="container container-padding-s">
-            <div class="row">
-              <div class="col-sm-6"> 
-                <h4>Face 1:</h4>
-                <div>
-                  <img id="face_11"  width="100%" height="100%"></img>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <ul id="label_face_11"></ul>
-              </div>
-            </div> 
-          </div>
-        </div>
-
-        <div class="col-sm-6 card-small"> 
-          <div class ="container container-padding-s">
-            <div class="row">
-              <div class="col-sm-6">
-                <h4>Face 2:</h4>
-                <div>
-                  <img id="face_22"  width="100%" height="100%"></img>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <ul id="label_face_22"></ul>
-              </div>
-            </div> 
-          </div>
-        </div>
-
-
-      </div>
-
-      <div class="row">
-        <div class="col-sm-6 card-small">
-          <div class ="container container-padding-s">
-            <div class="row">
-              <div class="col-sm-6">
-                <h4>Face 3:</h4>
-                <div>
-                    <img id="face_33"  width="100%" height="100%"></img>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <ul id="label_face_33"></ul>
-              </div>
-            </div> 
-          </div>
-          
-        </div>
-        <div class="col-sm-6 card-small"> 
-          <div class ="container container-padding-s">
-            <div class="row">
-              <div class="col-sm-6">
-                <h4>Face 4:</h4>
-                <div>
-                  <img id="face_44"  width="100%" height="100%"></img>
-                </div>
-              </div>
-              <div class="col-sm-6"><p>
-                <ul id="label_face_44"></ul>
-              </p></div>
-            </div> 
-          </div>
-        </div>
-
-
-      </div>
-    </div> -->
-
-    <div style= "visibility: hidden">
-        <canvas id="screenshot"></canvas>
-    </div>
- </div>
+<div style= "visibility: hidden">
+  <canvas id="screenshot"></canvas>
+</div>
+</div>
 </div>
 
  <script src="{{ url_for('static', filename = 'js/capture.js')}}"></script>
-
-
-
 
  {% endblock %}
