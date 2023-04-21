@@ -101,6 +101,26 @@ def get_k_nearest_neighbour():
         return jsonify({'success': 'False', 'msg': "Internal server error."})
 
 
+@app.route('/label_method_4', methods=['POST'])
+def label_method_4():
+    try:
+        request_data = request.get_json()
+        embedding = request_data.get('embedding')
+
+        status, detected_labels = label.label_method_4(embedding)
+        print("detected labels: " + str(detected_labels))
+
+        if status == 'success':
+            return jsonify({'success': 'True', 'labels': detected_labels})
+
+        else:
+            return jsonify({'success': 'False', 'msg': "Error in retrieving labels"})
+
+    except Exception as e:
+        print(e)
+        return jsonify({'success': 'False', 'msg': "Internal server error."})
+
+
 @app.route("/draw_labels", methods=['POST'])
 def draw_Labels():
     try:

@@ -3,13 +3,11 @@ const video = document.getElementById("video");
 
 let analyse = false;
 let face_data = [];
-//let apiUrl = "http://127.0.0.1:5003//processImage";
 let apiUrl = "/processimage";
 const method_1_btn = document.getElementById("method_1_btn");
 const method_2_btn = document.getElementById("method_2_btn");
 const method_3_btn = document.getElementById("method_3_btn");
 
-//Method commented out below is deprecated. This method is the new one.
 //https://www.tutorialspoint.com/how-to-open-a-webcam-using-javascript#:~:text=The%20process%20of%20opening%20a%20Webcam%201%20STEP,true%20as%20we%20will%20use%20them%20More%20items
 
 // checks if the navigator.mediaDevices object and the getUserMedia method are both supported by the browser.
@@ -26,6 +24,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   console.log("getUserMedia not supported");
 }
 
+//Method commented out below is deprecated. This method above is the new one.
 // // Checks if the browser supports userMedia method
 // navigator.getUserMedia =
 //   navigator.getUserMedia ||

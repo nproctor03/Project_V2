@@ -22,15 +22,33 @@ race_labels = ["White", "Black", "Indian", "East Asian",
                "Southeast Asian", "Middle Eastern", "Latino"]
 
 
+def sentence_builder(age_labels, gender_labels, race_labels):
+    sentence_array = []
+    for age in age_labels:
+        for race in race_labels:
+            for gender in gender_labels:
+                sentence = "A photo of a " + \
+                    str(age)+" year old "+str(race) + " "+str(gender)+"."
+                sentence_array.append(sentence)
+
+    return sentence_array
+
+
+sentences = sentence_builder(age_labels, gender_labels, race_labels)
+
+
 # set up for clip only detection method
+# clip.tokenize() function to converts each of these into tokenized format that can be processed by CLIP
 age_tokens = clip.tokenize(age_labels).to(device)
 gender_tokens = clip.tokenize(gender_labels).to(device)
 race_tokens = clip.tokenize(race_labels).to(device)
+sentence_tokens = clip.tokenize(sentences).to(device)
 
 with torch.no_grad():
     age_label_features = model.encode_text(age_tokens)
     gender_label_features = model.encode_text(gender_tokens)
     race_label_features = model.encode_text(race_tokens)
+    sentence_features = model.encode_text(sentence_tokens)
 
 # vi stands for verified images. These are used to perform nearest neighbour search
 # on images already in the db.
@@ -205,6 +223,40 @@ def label_method_3(image_embedding):
         status = "Fail"
         message = "There was an error processing your request"
         return status, message
+
+
+def label_method_4(embedding):
+    try:
+        # convert embedding to numpy array
+        emb = np.array(embedding).astype('float32')
+        image_features = F.normalize(
+            torch.from_numpy(emb), p=2, dim=1).to(device)
+
+        sentence_similarity = (100.0 * image_features @
+                               sentence_features.T).softmax(dim=-1)
+
+        values, indices = sentence_similarity[0].topk(1)
+        closest_sentence = sentences[int(indices[0])]
+        print(closest_sentence)
+        for i in age_labels:
+            if i in closest_sentence:
+                age = i
+
+        for i in race_labels:
+            if i in closest_sentence:
+                race = i
+
+        for i in gender_labels:
+            if i in closest_sentence:
+                gender = i
+
+        labels = [age, gender, race]
+        status = "success"
+        return status, labels
+
+    except Exception as e:
+        print("Exception:" + str(e))
+        return "No Label Identified"
 
 
 def get_age_label(embedding, nearest_neighbour_incorrect_labels):
