@@ -58,7 +58,7 @@ def get_embeddings(face_data):
     return face_data
 
 
-def get_labels(face_data):
+def get_labels(face_data, endpoint):
     """
     Takes in an array of face data, where each element is a dictionary containing information about an image.
     Sends a request to the labelling api endpoint, passing the embedding for each image as the data.
@@ -67,7 +67,7 @@ def get_labels(face_data):
     """
     for item in face_data:
 
-        response = requests.post("http://127.0.0.1:5003/get_labels",
+        response = requests.post(endpoint,
                                  headers={"Content-Type": "application/json"},
                                  data=json.dumps({"embedding": item["embedding"]}))
 
@@ -90,7 +90,7 @@ def label_image(face_data, imageData):
     Then returns the labelled_image and new_face_data.
     """
 
-    response = requests.post("http://127.0.0.1:5009/label_image",
+    response = requests.post("http://127.0.0.1:5003/draw_labels",
                              headers={"Content-Type": "application/json"},
                              data=json.dumps({"face_data": face_data, 'img': imageData}))
 

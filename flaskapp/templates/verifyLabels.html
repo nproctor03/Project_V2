@@ -1,10 +1,6 @@
 {% extends 'base.html' %} {% block content %}
-
-<h1>Verify Labels</h1>
-
-
-
-<div class="container container-padding-m">
+<!-- 
+<div class="container container-padding-m margin-top-xxl">
   <div id ="test" class="row" style="height: 500px;">
     <div class="col-sm-6" style="height: 100%"">
       <div class="card">
@@ -38,30 +34,200 @@
               <div class="row">
                 <div class="col-sm-6">
                   <label for="checkbox_{{ label }}">{{ label }}</label>
-                  <!-- <ul class="list-item">{{ label }}</label></ul> -->
                 </div>
                 <div class="col-sm-6">
                   <input type="checkbox" id="checkbox_{{ label }}" name="checkbox_{{ label }}"  value="{{ label }}">
                 </div>
               </div>
               {% endfor %}
-              <input type="hidden" name="_id" value="{{ id }}">
-              <input type="submit" class="btn btn-success">
+              <div class="margin-top-m">
+                <input type="hidden" name="_id" value="{{ id }}">
+                <input type="submit" class="btn btn-success" value = "Submit">
+              </div>
+              
             </form>
             {% else %}
             <div style="display: flex; justify-content: center; align-items: center;">
               <h1>No Images Requiring Verifaction. </h1>
             </div>
             {% endif %}
-              
-              <!-- <div class="button-container">
-                <a href="#!" class="btn btn-success" onClick="submit_ansers()">
-                  Submit
-                </a>
-              </div> -->
         </div>
       </div>
     </div>
+  </div> -->
+<div class="container container-padding-m margin-top-xxl">
+  <div id="test" class="row" style="height: 500px">
+    <div class="col-sm-6" style="height: 100%">
+      <div class="card">
+        <h5 class="card-header h5 text-center">Unverified Image</h5>
+        <div class="card-body">
+          <div class="booth">
+            {% if image_src %}
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <img
+                id="unverified_image"
+                width="65%"
+                height="65%"
+                src="data:image/jpeg;base64,{{ image_src }}"
+              />
+            </div>
+            {% else %}
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <h1>No Images Requiring Verification.</h1>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6" style="height: 100%">
+      <div class="card">
+        <h5 class="card-header h5 text-center">Verification</h5>
+        <div class="card-body">
+          {% if labels %}
+
+          <form action="{{ url_for('update_labels') }}" method="POST">
+            <div id="form-page-1">
+              <div id="title">
+                <p>Which of the labels below accurately describe the image:</p>
+              </div>
+              {% for label in labels %}
+              <div class="row">
+                <div class="col-sm-6">
+                  <label
+                    for="checkbox_{{ label }}"
+                    style="
+                      font-family: sans-serif;
+                      font-size: 18px;
+                      color: rgb(0, 0, 0);
+                    "
+                    >{{ label }}</label
+                  >
+                  <!-- <ul class="list-item">{{ label }}</label></ul> -->
+                </div>
+                <div class="col-sm-6">
+                  <input
+                    type="checkbox"
+                    id="checkbox_{{ label }}"
+                    name="checkbox_{{ label }}"
+                    value="{{ label }}"
+                    style="transform: scale(2)"
+                  />
+                </div>
+              </div>
+              {% endfor %}
+              <div class="margin-top-m">
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  onclick="ShowFormPage2()"
+                >
+                  Confirm Labels
+                </button>
+              </div>
+            </div>
+
+            <div id="form-page-2" style="display: none">
+              <div class="row" style="padding-left: 12px">
+                Enter any other labels you wish to add to the image. If you dont
+                wish to add any labels, click submit.
+              </div>
+
+              <div class="row margin-top-xs" style="height: 40px">
+                <div class="col-sm-6 user-label-input">
+                  <input
+                    type="text"
+                    id="user-labels"
+                    name="user-labels"
+                    placeholder="Enter label"
+                  /><br /><br />
+                </div>
+                <div class="col-sm-6">
+                  <button type="button" onclick="AddLabel()">Add Label</button>
+                </div>
+              </div>
+
+              <div class="row scrollable-area">
+                <ul id="labelList" class="margin-left-s"></ul>
+                <div></div>
+              </div>
+
+              <div class="margin-top-m">
+                <input type="hidden" name="_id" value="{{ id }}" />
+                <input
+                  type="hidden"
+                  name="user-added-labels"
+                  id="user-added-labels"
+                />
+                <input type="submit" class="btn btn-success" value="Submit" />
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  onclick="ShowFormPage1()"
+                >
+                  Back
+                </button>
+              </div>
+            </div>
+          </form>
+          {% else %}
+          <div
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <h1>No Images Requiring Verification.</h1>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="col-sm-6" style="height: 100%;">
+      <div class="card">
+        <h5 class="card-header h5 text-center">Verification</h5>
+        <div class="card-body">
+          {% if labels %}
+          <div>
+            <p>Which of the labels below accurately describe the image:</p>
+          </div>
+          <form action="{{ url_for('update_labels') }}" method="POST">
+            {% for label in labels %}
+            <div id= form-page-1" class="row">
+              <div class="col-sm-6">
+                <label for="checkbox_{{ label }}">{{ label }}</label>
+                <!-- <ul class="list-item">{{ label }}</label></ul> -->
+    <!-- </div>
+              <div class="col-sm-6">
+                <input type="checkbox" id="checkbox_{{ label }}" name="checkbox_{{ label }}" value="{{ label }}" />
+              </div>
+            </div>
+            {% endfor %}
+            <div class="margin-top-m">
+              <input type="hidden" name="_id" value="{{ id }}" />
+              <input type="submit" class="btn btn-success" value="Confirm Labels" />
+            </div>
+          </form>
+          {% else %}
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <h1>No Images Requiring Verification.</h1>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div> -->
   </div>
-  {% endblock %}
 </div>
+<script src="{{ url_for('static', filename = 'js/verify.js')}}"></script>
+{% endblock %}

@@ -23,20 +23,37 @@ class User:
 
     # Performs user log in and starts session if credentials are
     # correct.
-
     def login(self):
+
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if len(username.strip()) < 1 or len(username.strip()) > 50:
+            return jsonify({"error": "Username and Password must be between 1 and 50 characters."}), 401
+        if len(password.strip()) < 1 or len(password.strip()) > 50:
+            return jsonify({"error": "Username andPassword must be between 1 and 50 characters."}), 401
+
         user = db.users.find_one({
-            "name": request.form.get('username')
+            "name": username
         })
 
-        if user and pbkdf2_sha256.verify(request.form.get('password'), user['password']):
+        if user and pbkdf2_sha256.verify(password, user['password']):
             return self.start_session(user)
 
-        return jsonify({"error": "Invalid Login Credidentials."}), 401
+        return jsonify({"error": "Invalid Login Credentials."}), 401
 
     # Creates and normal user.
 
     def create_user(self):
+
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if len(username.strip()) < 1 or len(username.strip()) > 50:
+            return jsonify({"error": "Username and Password must be between 1 and 50 characters."}), 401
+        if len(password.strip()) < 1 or len(password.strip()) > 50:
+            return jsonify({"error": "Username andPassword must be between 1 and 50 characters."}), 401
+
         user = {
             "_id": uuid.uuid4().hex,
             "name": request.form.get('username'),
@@ -56,6 +73,14 @@ class User:
 
     # Creates and admin user.
     def create_admin_user(self):
+
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if len(username.strip()) < 1 or len(username.strip()) > 50:
+            return jsonify({"error": "Username and Password must be between 1 and 50 characters."}), 401
+        if len(password.strip()) < 1 or len(password.strip()) > 50:
+            return jsonify({"error": "Username andPassword must be between 1 and 50 characters."}), 401
 
         user = {
             "_id": uuid.uuid4().hex,

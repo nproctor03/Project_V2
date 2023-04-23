@@ -63,9 +63,13 @@ def detect():
                 values = [encoded_image, regions]
                 data.append(values)
 
-            # close the image object.
-            image.close()
-            image_arr.close()
+                # close the image object.
+                image.close()
+                image_arr.close()
+
+            # # close the image object.
+            # image.close()
+            # image_arr.close()
 
             return make_response(jsonify(success='True', FaceDetected='True', faces=data), 200)
         else:

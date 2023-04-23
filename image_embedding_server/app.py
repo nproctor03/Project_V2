@@ -30,13 +30,17 @@ def process_image():
         raw_content = req["img"]
         decoded_string = base64.b64decode(raw_content)
         numpy_image = np.frombuffer(decoded_string, dtype=np.uint8)
+
+        # Decode the image data from the numpy array
         img = cv2.imdecode(numpy_image, cv2.IMREAD_UNCHANGED)
         img = Image.fromarray(img)
+
+        # Get embedding
         embedding = generate_embedding(img)
         return jsonify({'success': 'True', 'embedding': embedding.tolist()}), 200
     except Exception as e:
         print(e)
-        return jsonify({'success': 'False', 'msg': 'Error'}), 500
+        return jsonify({'success': 'False', 'msg': 'Error Processing Image'}), 500
 
 
 def generate_embedding(file):
@@ -44,10 +48,9 @@ def generate_embedding(file):
     prepro = preprocess(file).unsqueeze(0).to(device)
     with torch.no_grad():
         image_features = model.encode_image(prepro)
-        # moved image features tensor from GPU to CPU if it is currently on GPU and casts as float.
+        # moves image features tensor from GPU to CPU if it is currently on GPU and casts as float.
         emb = image_features.to("cpu").float()
         # emb = image_features.cpu().detach().numpy().astype("float32")
-
     return emb
 
 
