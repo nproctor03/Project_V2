@@ -15,7 +15,10 @@ function ShowFormPage1() {
 function AddLabel() {
   user_label = document.getElementById("user-labels").value;
   labelList = document.getElementById("labelList");
-  //   labelListInput = document.getElementById("user-added-labels");
+  if (user_label.trim().length < 1 || user_label.trim().length > 50) {
+    alert("Label must be between 1 and 50 characters long");
+    return;
+  }
   console.log(user_label);
   listHTML = user_label.trim();
   labelList.innerHTML +=
@@ -29,7 +32,7 @@ function AddLabel() {
 }
 
 function removeElement(icon) {
-  // This first part of the funciton removes the element from the list diaplyed on screen.
+  // This first part of the funciton removes the element from the list displyed on screen.
   // get the parent element of the icon
   var colDiv = icon.parentNode;
   // get the parent element of the column div
@@ -39,15 +42,13 @@ function removeElement(icon) {
   // remove the row div from the unordered list
   ul.removeChild(rowDiv);
 
-  // This secon=d part updates the user-added-labels form input
+  // This second part updates the user-added-labels form input
   labels = ul.getElementsByTagName("li");
   userAddedLabels = "";
   for (var i = 0; i < labels.length; i++) {
-    console.log(labels[i]);
+    // console.log(labels[i]);
     userAddedLabels += labels[i].textContent + ",";
   }
-
-  console.log(userAddedLabels);
-
+  // console.log(userAddedLabels);
   document.getElementById("user-added-labels").value = userAddedLabels;
 }

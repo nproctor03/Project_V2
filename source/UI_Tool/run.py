@@ -39,22 +39,23 @@ def render_verify_page():
 # https://www.w3schools.com/python/python_mongodb_update.asp
 @app.route('/update_labels/', methods=["POST"])
 def update_labels():
-
     # Need to convert form from Immutable Dict object to a normal dict to allow us to manipulate data. We pop the id value into its own
     # variable to make processing easier later on.
     form = request.form.to_dict()
     id = form.pop("_id", None)
+    user_added_labels = form.pop("user-added-labels")
+    user_added_labels = user_added_labels.split(",")
+    user_added_labels.pop(-1)
+    # Need to pop off the input value to prevent it being added. This is incase the user has
+    # entered a label into the input but not clicked on submit.
+    _ = form.pop("user-labels")
     # print(id)
-    print(form)
-
+    # print(form)
     verified_labels = list(form.values())
-
     # print(verified_labels)
-
     # get list of unverified labels so we can update incorrect labels.
     image_data = db.image_data.find_one({"_id": id})
     unverified_labels = image_data['unverified_labels']
-
     # remove items in verified labels from unverified labels using a list comprehesion
     # https://www.geeksforgeeks.org/python-remove-all-values-from-a-list-present-in-other-list/
     incorrect_labels = [
@@ -62,10 +63,9 @@ def update_labels():
 
     # print("All labels: " + str(unverified_labels))
     # print("incorrect labels: " + str(incorrect_labels))
-
     filter = {'_id': id}
     newvalues = {"$set": {"unverified_labels": "", "verified_labels": verified_labels,
-                          "incorrect_labels": incorrect_labels, "requiresVerification": "False"}}
+                          "incorrect_labels": incorrect_labels, "requiresVerification": "False", "UserAddedLabels": user_added_labels}}
 
     db.image_data.update_one(filter, newvalues)
     # print(id)
