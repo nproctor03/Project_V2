@@ -4,12 +4,13 @@ const video = document.getElementById("video");
 let analyse = false;
 let face_data = [];
 let apiUrl = "/processimage";
+
+// define button constants. used later to enable/disable buttons.
 const method_1_btn = document.getElementById("method_1_btn");
 const method_2_btn = document.getElementById("method_2_btn");
 const method_3_btn = document.getElementById("method_3_btn");
 
 //https://www.tutorialspoint.com/how-to-open-a-webcam-using-javascript#:~:text=The%20process%20of%20opening%20a%20Webcam%201%20STEP,true%20as%20we%20will%20use%20them%20More%20items
-
 // checks if the navigator.mediaDevices object and the getUserMedia method are both supported by the browser.
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices
@@ -54,7 +55,10 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 //   video.srcObject = null;
 // };
 
-// Stop analysis
+/**
+ * Stops image analyses process but setting analyse = False.
+ * Enables buttons.
+ */
 function stopAnalysis() {
   analyse = false;
   method_1_btn.disabled = false;
@@ -98,13 +102,16 @@ function take_screenshot(method) {
     });
 }
 
-//Receives image data and updates UI.
+/**
+ *
+ * Receives image data and updates UI.
+ */
 function updateUI(data) {
   if (data.success !== "True") {
     console.log(data.msg);
   } else if (data.success === "True" && data.FaceDetected === "False") {
     console.log("No Face Detected.");
-    // Update UI
+    // Display "No Face Detected"
     for (let i = 1; i < 4; i++) {
       document.getElementById("ctn_face_" + i).style.display = "none";
       document.getElementById("not_detected_" + i).style.display = "flex";
@@ -122,7 +129,7 @@ function updateUI(data) {
 
       if (!item) {
         // clear UI
-        console.log(i);
+        // console.log(i);
         document.getElementById("ctn_face_" + i).style.display = "none";
         document.getElementById("not_detected_" + i).style.display = "flex";
         continue;
@@ -131,7 +138,6 @@ function updateUI(data) {
         image = item.image;
         image_name = item.name;
         //console.log(image_name);
-
         labels = item.labels;
         // console.log("item labels: " + item.labels);
         // console.log("labels: " + labels);
@@ -152,12 +158,13 @@ function updateUI(data) {
         document.getElementById("not_detected_" + i).style.display = "none";
       }
     }
-
     //update results image. This is the origional image with faces bordered.
     document.getElementById("image_1").src =
       "data:image/jpeg;base64," + data.image_url;
   }
 }
+
+// -----Code commented out below is an old version------
 
 // function handleScreenshot() {
 //   analyse = true;

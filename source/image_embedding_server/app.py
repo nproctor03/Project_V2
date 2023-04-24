@@ -8,6 +8,8 @@ import clip
 import torch
 
 app = Flask(__name__)
+# Neccessary to prevent CORS error being thrown.
+# https://stackoverflow.com/questions/28461001/python-flask-cors-issue
 CORS(app)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"

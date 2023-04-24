@@ -1,4 +1,8 @@
+/**
+ * Event listener to perform user login.
+ */
 $("form[name=login_form").submit(function (e) {
+  e.preventDefault();
   var $form = $(this);
   var $error = $form.find(".error");
   var data = $form.serialize();
@@ -16,22 +20,18 @@ $("form[name=login_form").submit(function (e) {
       console.log("fail");
     },
   });
-
-  e.preventDefault();
 });
 
 /**
+ * Event listener for user creation form.
  * Calls the appropriate endpoint based on wether the user is an admin user or not.
  */
 $("form[name=create_user_form").submit(function (e) {
   var $form = $(this);
   var $error = $form.find(".error");
   var data = $form.serialize();
-
-  // console.log(data);
-  // console.log("HELLOOOOOO");
-
   var url;
+  // console.log(data);
 
   if ($("#isAdmin").is(":checked")) {
     console.log("True");

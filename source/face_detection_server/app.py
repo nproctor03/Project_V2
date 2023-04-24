@@ -2,15 +2,16 @@ from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 from deepface import DeepFace
 from deepface.detectors import FaceDetector
-#from retinaface import RetinaFace
 import cv2
 import numpy as np
-
 from io import BytesIO
 from PIL import Image
 import base64
 
 app = Flask(__name__)
+
+# Neccessary to prevent CORS error being thrown.
+# https://stackoverflow.com/questions/28461001/python-flask-cors-issue
 CORS(app)
 
 
@@ -22,7 +23,6 @@ def index():
 @app.route('/detect', methods=["POST"])
 def detect():
     req = request.get_json()
-
     if "img" not in req:
         return make_response(jsonify(success="False", error='No Image Detected'), 400)
 
@@ -30,6 +30,7 @@ def detect():
         # Get base64 encoded string from request object
         raw_content = req["img"]
         # decode the base 64 string
+        # https://stackoverflow.com/questions/33754935/read-a-base-64-encoded-image-from-memory-using-opencv-python-library
         decoded_string = base64.b64decode(raw_content[22:])
         # create array of decoded string
         numpy_image = np.frombuffer(decoded_string, dtype=np.uint8)
@@ -38,17 +39,16 @@ def detect():
 
         # build face detector model
         # https://github.com/serengil/deepface/blob/master/deepface/detectors/FaceDetector.py
-        face_detector = FaceDetector.build_model("opencv")
         detector_backend = "opencv"
+        face_detector = FaceDetector.build_model(detector_backend)
         faces = FaceDetector.detect_faces(face_detector, detector_backend, img)
 
         if len(faces) > 0:
             data = []
-
             # process each face to send in response.
             for face in faces:
-
                 # The next 3 lines of code are important as they allow the image to be saved and sent without temporarily saving to disk.
+                # Image is returned as a np array. So need to format in order for it to be sent in response.
                 image = Image.fromarray(face[0])
                 image_arr = BytesIO()
                 image.save(image_arr, format='PNG')

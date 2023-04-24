@@ -9,10 +9,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 app = Flask(__name__)
+
+# Neccessary to prevent CORS error being thrown.
+# https://stackoverflow.com/questions/28461001/python-flask-cors-issue
 CORS(app)
-
-app.secret_key = "b'8{\x05\xfbFv'\x08t\x80\xe6\xc6\xdc\xad\xbay\x03ly\xeb\xad\xaa,t'"
-
 
 # https://dev.to/brightside/scheduling-tasks-using-apscheduler-in-django-2dbl#:~:text=Setting%20up%20APScheduler%3A%201%20Adding%20something_update.py%20to%20our,4%20Thank%20you%2C%20that%27s%20it%20for%20this%20tutorial.
 scheduler = BackgroundScheduler()
