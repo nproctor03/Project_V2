@@ -2,6 +2,8 @@ from flask import Flask, render_template
 from flaskapp import app
 from flaskapp.user.models import User
 
+# user login/create/signout routes
+
 
 @app.route('/user/login', methods=['POST'])
 def login():
