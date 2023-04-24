@@ -2,24 +2,42 @@ from flask import render_template, request, jsonify
 from flaskapp import app, login_required, admin_required, db
 from flaskapp.user.routes import *
 import requests
-import json
 from functions import get_embeddings, get_labels, label_image, save_image
 
 
 @app.route('/')
 def render_home_page():
+    """_summary_
+
+    Returns:
+        Renders the home.html webpage. 
+    """
     return render_template('home.html')
 
 
 @app.route('/analyser/')
 def render_analyser_page():
+    """_summary_
+
+    Returns:
+        Renders the faceAnalyser.html webpage. 
+    """
     return render_template('faceAnalyser.html')
 
 
 @app.route('/verify/')
 @login_required
 def render_verify_page():
+    """_summary_
 
+    This function is called when a request is made to the /verify/ endpoint. It queries the image database 
+    and checks if an image exists in the database that requires verification. If an image exists, it retrieves 
+    the unverified labels and the image data from the database and returns them as parameters to the verifyLabels.html
+    template. If there is no image that requires verification, the template is returned without any parameters.
+
+    Returns:
+        Renders the verifyLabels.html webpage. 
+    """
     result = db.image_data.find_one({"requiresVerification": "True"})
     if result:
         # print(result)
@@ -31,16 +49,17 @@ def render_verify_page():
 
     return render_template('verifyLabels.html')
 
-    #  return render_template('verifyLabels.html', image = image, labels - labels)
-
-    # return render_template('verifyLabels.html')
-
-
 # https://www.w3schools.com/python/python_mongodb_update.asp
+
+
 @app.route('/update_labels/', methods=["POST"])
 def update_labels():
-    # Need to convert form from Immutable Dict object to a normal dict to allow us to manipulate data. We pop the id value into its own
-    # variable to make processing easier later on.
+    """_summary_
+    This function is called when a POST request is made to the '/update_labels/' endpoint. The function receives and 
+    processes the form data sent in the request, and updates the relevant record in the image database. 
+
+    """
+    # Need to convert form from Immutable Dict object to a normal dict to allow us to manipulate data.
     form = request.form.to_dict()
     id = form.pop("_id", None)
     user_added_labels = form.pop("user-added-labels")
@@ -69,33 +88,42 @@ def update_labels():
 
     db.image_data.update_one(filter, newvalues)
     # print(id)
-
     return render_verify_page()
 
 
 @app.route('/login/')
 def render_login_page():
+    """_summary_
+        Renders the login.html webpage. 
+    """
     return render_template("login.html")
 
 
 @app.route('/createaccount/')
 @admin_required
 def render_create_account_page():
+    """_summary_
+        Renders the createUser.html webpage. Can only be accessed by an Admin user. 
+    """
     return render_template("createUser.html")
 
 
 @app.route('/processimage', methods=["POST"])
 def process_image():
+    """_summary_
+    This function is called when a POST request is made to the /processimage endpoint. It retrieves the image data from the 
+    request and sends the image to the Face Detection server. If the face detection server detects faces, it then sends each 
+    individual face image to the embedding API and the labelling API to label the image and returns the labels attached. If
+    no face is detected, returns "No Face Detected" in response. 
+    """
     req = request.get_json()
     try:
         if "img" not in req:
             return jsonify({"success": 'false', 'msg': 'No image found in request'})
 
         image_data = req["img"]
-
         endpoint = "http://127.0.0.1:5010/detect"
         headers = {"Content-Type": "application/json"}
-
         response = requests.post(endpoint, headers=headers,
                                  json={"img": image_data})
 
@@ -108,11 +136,11 @@ def process_image():
         # .get checks if "FaceDetected" exists in data. if it does it returns default value false.
         # If value of "FaceDeteced" != True, it returns an error message.
         if data.get("FaceDetected", "False") != "True":
-            print("No faces detected")
+            # print("No faces detected")
             return jsonify({'success': 'True', 'FaceDetected': 'False'})
 
         # If faces were detected, get faces from response object.
-        print("Faces detected")
+        # print("Faces detected")
         faces = data.get("faces")
 
         # loop through faces and create a dictionary item in face_data for each face.
@@ -123,7 +151,6 @@ def process_image():
             "labels": [],
             "name": ""
         }
-
             for face in faces]
 
         # Get labelling method
@@ -139,9 +166,9 @@ def process_image():
             print("method 3")
 
         face_data = get_embeddings(face_data)
-        print("embedding retrieved")
+        # print("embedding retrieved")
         face_data = get_labels(face_data, label_endpoint)
-        print("labels retrieved")
+        # print("labels retrieved")
         labelled_image, complete_face_data = label_image(face_data, image_data)
         save_image(face_data)
 
