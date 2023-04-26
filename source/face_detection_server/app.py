@@ -22,6 +22,13 @@ def index():
 
 @app.route('/detect', methods=["POST"])
 def detect():
+    """_summary_
+    This function receives a POST request containing image data in base 65 format. If no Image data is present, an error message is returned stating 
+    "No Image Detected". 
+    If the requests contains image data, the function returns an array object containing the locations of any faces present in the image,
+    and the image data of the cropped out face. 
+    If no faces are present in the image, the function returns {success='True', FaceDetected='False'}.
+    """
     req = request.get_json()
     if "img" not in req:
         return make_response(jsonify(success="False", error='No Image Detected'), 400)
@@ -62,14 +69,9 @@ def detect():
 
                 values = [encoded_image, regions]
                 data.append(values)
-
                 # close the image object.
                 image.close()
                 image_arr.close()
-
-            # # close the image object.
-            # image.close()
-            # image_arr.close()
 
             return make_response(jsonify(success='True', FaceDetected='True', faces=data), 200)
         else:

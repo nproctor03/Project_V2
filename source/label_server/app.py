@@ -25,30 +25,38 @@ scheduler.start()
 # vi_embeddings variable at start up.
 label.update_data()
 
-# x = label.vi_index.ntotal
-# print(x)
-
 
 @app.route('/', methods=['POST'])
 def reset_index():
+    """_summary_
+    Updates the FAISS index of verified images in the database. 
+    """
     label.update_data()
     return jsonify({'message': 'Data updated successfully'}), 204
 
-# Clip method
-
 
 @app.route('/label_method_1', methods=['POST'])
-def label_clip_only():
+def get_labels_method_1():
+    """_summary_
+
+    This function is called when a request is made to /label_method_1 endpoint.
+    This labelleling method uses CLIP to attach FairFace labels to an image. 
+
+    labels: 
+        age_labels = ["0-2", "3-9", "10-19", "20-29", "30-39",
+              "40-49", "50-59", "60-69", "more than 70"]
+        gender_labels = ["Male", "Female"]
+        race_labels = ["White", "Black", "Indian", "East Asian",
+                    "Southeast Asian", "Middle Eastern", "Latino"]
+
+    """
     try:
         request_data = request.get_json()
         embedding = request_data.get('embedding')
-
         status, detected_labels = label.label_method_1(embedding)
-        print("detected labels: " + str(detected_labels))
-
+        # print("detected labels: " + str(detected_labels))
         if status == 'success':
             return jsonify({'success': 'True', 'labels': detected_labels})
-
         else:
             return jsonify({'success': 'False', 'msg': "Error in retrieving labels"})
 
@@ -56,21 +64,21 @@ def label_clip_only():
         print(e)
         return jsonify({'success': 'False', 'msg': "Internal server error."})
 
-# origional (dont be wrong) method
-
 
 @app.route('/label_method_2', methods=['POST'])
-def get_labels_dont_be_wrong():
+def get_labels_method_2():
+    """_summary_
+    This function is called when a request is made to /label_method_2 endpoint.
+    This labelleling method attempts to correct predictions and improve accuracy by comparing the predicted label 
+    to the predictions of the 3 closest images in the database.
+    """
     try:
         request_data = request.get_json()
         embedding = request_data.get('embedding')
-
         status, detected_labels = label.label_method_2(embedding)
-        print("detected labels: " + str(detected_labels))
-
+        # print("detected labels: " + str(detected_labels))
         if status == 'success':
             return jsonify({'success': 'True', 'labels': detected_labels})
-
         else:
             return jsonify({'success': 'False', 'msg': "Error in retrieving labels"})
 
@@ -82,37 +90,41 @@ def get_labels_dont_be_wrong():
 
 
 @app.route('/label_method_3', methods=['POST'])
-def get_k_nearest_neighbour():
+def get_labels_method_3():
+    """_summary_
+    This function is called when a request is made to /label_method_3 endpoint.
+    This labelleling method uses K nearest neighbour search to predict image labels. 
+    """
     try:
         request_data = request.get_json()
         embedding = request_data.get('embedding')
-
         status, detected_labels = label.label_method_3(embedding)
-        print("detected labels: " + str(detected_labels))
+        # print("detected labels: " + str(detected_labels))
 
         if status == 'success':
             return jsonify({'success': 'True', 'labels': detected_labels})
-
         else:
             return jsonify({'success': 'False', 'msg': "Error in retrieving labels"})
-
     except Exception as e:
         print(e)
         return jsonify({'success': 'False', 'msg': "Internal server error."})
 
 
 @app.route('/label_method_4', methods=['POST'])
-def label_method_4():
+def get_labels_method_4():
+    """
+    This function is called when a request is made to /label_method_4 endpoint.
+    This function was developed during the experimentation phase. It is similar to label_method_1, the prompt given to clip 
+    has been improved.
+    """
     try:
         request_data = request.get_json()
         embedding = request_data.get('embedding')
-
         status, detected_labels = label.label_method_4(embedding)
-        print("detected labels: " + str(detected_labels))
+        # print("detected labels: " + str(detected_labels))
 
         if status == 'success':
             return jsonify({'success': 'True', 'labels': detected_labels})
-
         else:
             return jsonify({'success': 'False', 'msg': "Error in retrieving labels"})
 
@@ -121,25 +133,28 @@ def label_method_4():
         return jsonify({'success': 'False', 'msg': "Internal server error."})
 
 
+# https://www.geeksforgeeks.org/python-pil-imagedraw-draw-rectangle/
 @app.route("/draw_labels", methods=['POST'])
 def draw_Labels():
+    """_summary_
+    This function is called when a request is made to the /draw_labels endpoint. 
+    The function expects an image in the request and regional co-ordinates of all faces in the image. 
+
+    Returns the image with each face bordered and labelled sequentially "Face 1", "Face 2" etc.
+    """
     try:
         data = request.get_json()
         if not data:
             raise ValueError('No data received')
-
         # print(data['face_data'])
-
         # Create Image object from origional image
         raw_content = data["img"]
-
         if not raw_content:
             raise ValueError('No image data provided')
 
         decoded_string = base64.b64decode(raw_content[22:])
         image_bytes = BytesIO(decoded_string)
         image = Image.open(image_bytes)
-
         # create drawing context
         draw = ImageDraw.Draw(image)
         face_data = data['face_data']
@@ -155,22 +170,18 @@ def draw_Labels():
             x, y, w, h = regions
             font = ImageFont.truetype('arial.ttf', 16)
             item['name'] = "face_"+str(count)
-
             # Draw Boxes
             # x,y = cordinates of the top left corner of the rectangle. w = width and h = height.
             draw.rectangle((x, y, x+w, y+h), outline=(255, 0, 0), width=2)
-
             # Draw labels
             # x,y = cordinates of the top left corner of the rectangle. w = width and h = height.
             # label_1
             # get label size. Returns tuple of (Width, height)
             label_Size = draw.textsize("Face "+str(count), font=font)
-            print(label_Size)
-
+            # print(label_Size)
             # get the centre points rectangle height and width.
             # x_centre = x+(w/2)
             # y_centre = y+(h/2)
-
             # Check of there is enough space above the image to tag the face
             if y-label_Size[1] > label_Size[1]:
                 draw.text((x, y-25), "Face "+str(count),
@@ -179,12 +190,9 @@ def draw_Labels():
             elif y+h+label_Size[1] > label_Size[1]:
                 draw.text((x, y+h+(label_Size[1]/2)), "Face "+str(count),
                           font=font, fill=(255, 255, 255))
-
             count = count + 1
-
             # draw.text((x-20, y+h+20), labels[1], font=font, fill=(255, 255, 255))
             # draw.text((x+w+20, y+h+20), labels[2], font=font, fill=(255, 255, 255))
-
             # draw.line((x-50, y+h+10, x, y), fill=(255, 255, 255), width=2)
             # draw.line((x+w+50, y+h+10, x+w, y), fill=(255, 255, 255), width=2)
 
@@ -205,35 +213,6 @@ def draw_Labels():
 
     except Exception as e:
         return jsonify({'success': False, 'error': f'An error occurred: {str(e)}'})
-
-    # guid = uuid.uuid4()
-
-    # new_bytes = BytesIO()
-    # image.save(new_bytes, 'PNG')
-
-    # image.show()
-
-    # filepath = "temp_data\\"+str(guid)+".jpg"
-    # image_bytes = image.tobytes()
-
-    # image_64 = base64.b64encode(image_bytes).decode("ascii")
-
-    # newImage = "data:image/png;base64,"+image_64
-    # with open(filepath, "wb") as f:
-    #     f.write(image)
-
-    # with open(filepath, 'rb') as f:
-    #     image_bytes = f.read()
-
-    # if os.path.exists(filepath):
-    #     os.remove(filepath)
-    #     print("file deleted")
-
-    # return send_file(BytesIO(image_bytes), mimetype='image/png')
-
-    # return json.dumps({"msg": "success", "image": newImage})
-
-    # return Response(image_bytes, mimetype='image/png')
 
 
 if __name__ == "__main__":
