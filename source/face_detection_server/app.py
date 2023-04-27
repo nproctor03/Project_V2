@@ -72,14 +72,14 @@ def detect():
                 # close the image object.
                 image.close()
                 image_arr.close()
-
-            return make_response(jsonify(success='True', FaceDetected='True', faces=data), 200)
+            return jsonify({'success': 'True', 'FaceDetected': 'True', 'faces': data}), 200
+            # return make_response(jsonify(success='True', FaceDetected='True', faces=data), 200)
         else:
-            return make_response(jsonify(success='True', FaceDetected='False'), 200)
+            return jsonify({'success': 'True', 'FaceDetected': 'False'}), 200
 
     except Exception as e:
         print(e)
-        return make_response(jsonify(success='False', error='Error processing image'), 400)
+        return jsonify({'success': 'False', 'error': 'Error processing image'}), 400
 
 
 if __name__ == "__main__":
