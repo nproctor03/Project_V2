@@ -11,7 +11,7 @@
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
       crossorigin="anonymous"
     />
-    <!-- <link rel="stylesheet" href="\static\css\normalize.css" /> -->
+
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename
@@ -84,23 +84,10 @@
   </nav>
 
   <body>
-    <div id="flashes">
-      {% with messages = get_flashed_messages() %} {% if messages %}
-      <ul class="flashes">
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %} {% endwith %}
-    </div>
-
     {% block content %}
     <!-- template content inserted here -->
     {% endblock %}
-
     <script src="{{ url_for('static', filename = 'js/jquery.js')}}"></script>
     <script src="{{ url_for('static', filename = 'js/login_scripts.js')}}"></script>
-    <!-- <script src="\static\js\jquery.js"></script>
-    <script src="\static\js\scripts.js"></script> -->
   </body>
 </html>

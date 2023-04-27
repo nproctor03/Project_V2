@@ -26,7 +26,7 @@ class User:
     # Performs user log in and starts session if credentials are correct.
     def login(self):
         """_summary_
-        Retrieves user inputted password and username from request. Validates inputs and checks user details are correct. 
+        Retrieves user inputed password and username from request. Validates inputs and checks user details are correct. 
         If correct, creates a user session by calling start_session(). Else returns appropriate validation message. 
         """
         username = request.form.get('username')
@@ -34,7 +34,7 @@ class User:
         if len(username.strip()) < 1 or len(username.strip()) > 50:
             return jsonify({"error": "Username and Password must be between 1 and 50 characters."}), 401
         if len(password.strip()) < 1 or len(password.strip()) > 50:
-            return jsonify({"error": "Username andPassword must be between 1 and 50 characters."}), 401
+            return jsonify({"error": "Username and Password must be between 1 and 50 characters."}), 401
         user = db.users.find_one({
             "name": username
         })
@@ -54,7 +54,7 @@ class User:
         if len(username.strip()) < 1 or len(username.strip()) > 50:
             return jsonify({"error": "Username and Password must be between 1 and 50 characters."}), 401
         if len(password.strip()) < 1 or len(password.strip()) > 50:
-            return jsonify({"error": "Username andPassword must be between 1 and 50 characters."}), 401
+            return jsonify({"error": "Username and Password must be between 1 and 50 characters."}), 401
 
         user = {
             "_id": uuid.uuid4().hex,
@@ -64,7 +64,7 @@ class User:
         }
 
         if db.users.find_one({"name": user['name']}):
-            return jsonify({"error": "Username already exists. Please Choose Another"}), 400
+            return jsonify({"error": "Username already exists. Please choose another"}), 400
 
         user["password"] = pbkdf2_sha256.encrypt(user["password"])
         if db.users.insert_one(user):
@@ -93,7 +93,7 @@ class User:
         }
 
         if db.users.find_one({"name": user['name']}):
-            return jsonify({"error": "Username already exists. PLease Choose Another"}), 400
+            return jsonify({"error": "Username already exists. Please choose another"}), 400
         # Encrypt the password.
         user["password"] = pbkdf2_sha256.encrypt(user["password"])
         if db.users.insert_one(user):

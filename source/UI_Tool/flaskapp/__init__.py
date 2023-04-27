@@ -12,7 +12,9 @@ import os
 # db config
 client = pymongo.MongoClient('localhost', 27017)
 db = client.images
+
 app = Flask(__name__)
+app.secret_key = "b'W~\x9d\xe9\x13}2Ou\x1f\xdd\x9ct\x1d\xfc+'"
 
 # decorators
 

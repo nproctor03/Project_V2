@@ -2,9 +2,7 @@
  * Hides the first page of the verify labels form and shows page 2
  */
 function ShowFormPage2() {
-  // hide page 1
   document.getElementById("form-page-1").style.display = "none";
-  //   unhide page 2
   document.getElementById("form-page-2").style.display = "block";
 }
 
@@ -12,9 +10,7 @@ function ShowFormPage2() {
  * Hides the second page of the verify labels form and shows page 1
  */
 function ShowFormPage1() {
-  //  unhide page 1
   document.getElementById("form-page-2").style.display = "none";
-  // hide page 2
   document.getElementById("form-page-1").style.display = "block";
 }
 
