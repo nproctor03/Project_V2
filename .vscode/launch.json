@@ -10,10 +10,10 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                // "FLASK_APP": "face_detection_server/app.py",
-                // "FLASK_APP": "image_embedding_server/app.py"
-                "FLASK_APP": "run.py",
-                // "FLASK_APP": "label_server/app.py",
+                // "FLASK_APP": "source/face_detection_server/app.py",
+                // "FLASK_APP": "source/image_embedding_server/app.py"
+                "FLASK_APP": "source/UI_Tool/run.py",
+                // "FLASK_APP": "source/label_server/app.py",
                 "FLASK_DEBUG": "1"
             },
             "args": [

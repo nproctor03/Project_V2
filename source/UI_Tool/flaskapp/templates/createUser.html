@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="body-padding-20 margin-top-m card-wrapper">
+  <div id="success"></div>
+  <div class="row">
+    <div class="col-3 login_card">
+      <div class="content-title center">Create Account</div>
+      <div class="margin-top-m">
+        <form name="create_user_form" autocomplete="off">
+          <label for="username">Username</label>
+          <input id="username" type="text" name="username" class="field" />
+
+          <label for="password">Password</label>
+          <input id="password" type="password" name="password" class="field" />
+          <div class="row">
+            <label for="checkbox" class="col-12">User is admin?</label>
+            <div class="col-10">
+              <div class="form-check">
+                <input
+                  id="isAdmin"
+                  type="checkbox"
+                  name="checkbox"
+                  class="form-check-input"
+                />
+              </div>
+            </div>
+          </div>
+
+          <p id="error-message" class="error error--hidden"></p>
+
+          <div class="row margin-top-m center">
+            <div class="col-6">
+              <input type="submit" value="Create User" class="btn" />
+            </div>
+            <div class="col-6">
+              <button id="clear-form" class="btn">Clear</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{{ url_for('static', filename = 'js/login_scripts.js')}}"></script>
+
+{% endblock %}
